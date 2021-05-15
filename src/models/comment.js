@@ -5,3 +5,5 @@ export default class Comment {
     this.author = author;
   }
 }
+
+export const getCommentsFromDB = (post) => {};
