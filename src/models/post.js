@@ -12,7 +12,7 @@ export const getCommentsFromDB = async (post_id) => {
     error = e;
   }
   if (!user || !response || error) {
-    return { succes: false, error: error || "No data." };
+    return { success: false, error: error || "No data." };
   }
   const { id, created_on, content, nickname, author_id } = response;
   return {
@@ -21,14 +21,14 @@ export const getCommentsFromDB = async (post_id) => {
   };
 };
 
-export const getPostByID = async (id) => {
+export const getPostByID = async (postID) => {
   let error = false;
   const db = await getDB();
   const query =
     "SELECT Post.*, Category.name, Category.uni_id FROM Post INNER JOIN Category ON Post.category_id = Category.id WHERE Post.id = ?";
   let response;
   try {
-    response = await db.get(query, [id]);
+    response = await db.get(query, [postID]);
   } catch (e) {
     error = e;
   }
