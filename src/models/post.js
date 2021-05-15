@@ -13,7 +13,8 @@ export default class Post {
 
   async getComments() {
     let error = false;
-    const response = getDB().all(
+    const db = await getDB();
+    const response = await db.all(
       "SELECT id, created_on, author_id, content FROM Comments WHERE post_id = ?",
       [this.id],
       (e) => (error = e)
@@ -28,6 +29,18 @@ export default class Post {
         (comment) =>
           new Comment(response.id, response.content, response.timestamp, user)
       ),
+    };
+  }
+
+  async json() {
+    return {
+      id: this.id,
+      title: this.title,
+      content: this.content,
+      timestamp: this.timestamp,
+      author: this.author,
+      category: this.category,
+      comments: await this.getComments(),
     };
   }
 }

@@ -23,29 +23,26 @@ export default class User {
     };
   }
 
-  async getCreatedPosts() {}
+  async getCreatedPostsFromDB() {}
 
-  async JSON() {
-    return JSON.parse({
+  async json() {
+    return {
       nickname: this.nickname,
       email: this.email,
       passwd: this.passwd,
       data: this.data,
-    });
+    };
   }
 
   /* getCreatedPosts */
 }
 
-export const getUserFromDB = (nickname, passwd) => {
+export const getUserFromDB = async (nickname, passwd) => {
   let error = false;
   const query =
     "SELECT User.id, User.nickname, User.email, User.passwd, User.uni_id, Uni.name, User.first_name, User.surnames, User.degree FROM User INNER JOIN Uni ON User.id = Uni.id WHERE User.nickname = ? AND User.passwd = ?";
-  const response = await getDB().get(
-    query,
-    [nickname, passwd],
-    (e) => (error = e)
-  );
+  const db = await getDB();
+  const response = await db.get(query, [nickname, passwd], (e) => (error = e));
 
   if (!response || error) {
     return { success: false, error: error || "No data" };
@@ -56,7 +53,7 @@ export const getUserFromDB = (nickname, passwd) => {
   };
 };
 
-export const createUserInDB = (
+export const createUserInDB = async (
   nickname,
   email,
   passwd,
@@ -65,6 +62,7 @@ export const createUserInDB = (
   surnames = null,
   degree = null
 ) => {
+  const db = await getDB();
   let error = false;
   let query =
     "INSERT INTO User (nickname, email, passwd, uni_id, first_name, surnames, degree) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -84,7 +82,8 @@ export const createUserInDB = (
 export const getUserByID = async (id) => {
   const query =
     "SELECT User.id, User.nickname, User.email, User.passwd, User.uni_id, Uni.name, User.first_name, User.surnames, User.degree FROM User INNER JOIN Uni ON User.id = Uni.id WHERE User.id = ?";
-  const response = await getDB().get(query, [id], (e) => (error = e));
+  const db = await getDB();
+  const response = await db.get(query, [id], (e) => (error = e));
 
   if (!response || error) {
     return { success: false, error: error || "No data" };

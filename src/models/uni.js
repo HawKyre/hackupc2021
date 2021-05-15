@@ -8,7 +8,8 @@ export default class Uni {
 
   async getCategoriesFromDB() {
     let error = false;
-    const response = await getDB().all(
+    const db = await getDB();
+    const response = await db.all(
       "SELECT name FROM Category WHERE uni_id = ?",
       [this.id],
       (e) => (error = e)
@@ -19,17 +20,18 @@ export default class Uni {
     return response;
   }
 
-  async JSON() {
-    return { name: this.name, categories: await this.getCategories() };
+  async json() {
+    return {
+      name: this.name,
+      categories: await this.getCategories(),
+    };
   }
 }
 
 export const getUnisListFromDB = async () => {
   let error = false;
-  const response = await getDB().all(
-    "SELECT name, id FROM Uni",
-    (e) => (error = e)
-  );
+  const db = await getDB();
+  const response = await db.all("SELECT name, id FROM Uni", (e) => (error = e));
   if (!response || error) {
     return { success: false, error: error || "No data" };
   }
