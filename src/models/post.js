@@ -33,6 +33,7 @@ export default class Post {
   }
 
   async json() {
+    let comments = this.getComments().then((comm) => (comments = comm.data));
     return toJSON({
       id: this.id,
       title: this.title,
@@ -40,7 +41,7 @@ export default class Post {
       timestamp: this.timestamp,
       author: this.author,
       category: this.category,
-      comments: (await this.getComments()).data,
+      comments,
     });
   }
 }

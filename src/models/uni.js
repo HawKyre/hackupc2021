@@ -20,10 +20,12 @@ export default class Uni {
     return response;
   }
 
-  async json() {
+  json() {
+    let categories;
+    this.getCategoriesFromDB().then((cats) => (categories = cats.data));
     return {
       name: this.name,
-      categories: (await this.getCategories()).data,
+      categories,
     };
   }
 }

@@ -25,7 +25,7 @@ export default class User {
 
   async getCreatedPostsFromDB() {}
 
-  async json() {
+  json() {
     return {
       nickname: this.nickname,
       email: this.email,
