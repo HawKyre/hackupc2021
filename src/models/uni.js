@@ -17,7 +17,7 @@ export default class Uni {
     if (!response || error) {
       return { success: false, error: error || "No data." };
     }
-    return response;
+    return { success: true, data: response };
   }
 
   json() {
