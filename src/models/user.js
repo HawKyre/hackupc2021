@@ -26,12 +26,12 @@ export default class User {
   async getCreatedPostsFromDB() {}
 
   async json() {
-    return {
+    return toJSON({
       nickname: this.nickname,
       email: this.email,
       passwd: this.passwd,
       data: this.data,
-    };
+    });
   }
 
   /* getCreatedPosts */

@@ -33,7 +33,7 @@ export default class Post {
   }
 
   async json() {
-    return {
+    return toJSON({
       id: this.id,
       title: this.title,
       content: this.content,
@@ -41,7 +41,7 @@ export default class Post {
       author: this.author,
       category: this.category,
       comments: await this.getComments(),
-    };
+    });
   }
 }
 

@@ -21,10 +21,10 @@ export default class Uni {
   }
 
   async json() {
-    return {
+    return toJSON({
       name: this.name,
       categories: await this.getCategories(),
-    };
+    });
   }
 }
 
@@ -37,6 +37,6 @@ export const getUnisListFromDB = async () => {
   }
   return {
     success: true,
-    content: response.map(({ name: name_, id }) => new Uni(id, name_)),
+    data: response.map(({ name: name_, id }) => new Uni(id, name_)),
   };
 };
