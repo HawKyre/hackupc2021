@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 
 export default (req, res) => {
   if (req.method === "POST") {
-    console.log(req.body);
     let user = getUserFromDB(req.body.username, req.body.password);
     if (!user) {
       res.status(400).json({
@@ -16,7 +15,7 @@ export default (req, res) => {
     // If exists, return JWT with the info
     // If not, create new user and return JWT
 
-    const jwtToken = jwt.sign(toJSON(user), process.env.JWT_SECRET, {
+    const jwtToken = jwt.sign(user.json(), process.env.JWT_SECRET, {
       expiresIn: 3000, //50 minutes
     });
     res.status(200).json({

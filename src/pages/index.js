@@ -5,19 +5,9 @@ import { useState } from "react";
 import useSWR from "swr";
 import { LoremIpsum } from "lorem-ipsum";
 import CategoryShowcase from "@components/CategoryShowcase";
-
-const categoryListData = [
-  "Novedades",
-  "Noticias",
-  "Deportes",
-  "Becas",
-  "Y yo que sé",
-  "Por favor",
-  "Solo quiero",
-  "Rellenar",
-  "Los putos",
-  "Huecos :)",
-];
+import jwt from "jsonwebtoken";
+import { getCategoriesFromDB } from "@models/uni";
+import PostVisualizer from "@components/PostVisualizer";
 
 const postListData = (() => {
   const lorem = new LoremIpsum({
@@ -43,25 +33,23 @@ const postListData = (() => {
   return arr;
 })();
 
-export default function Home() {
+export default function Home({ categoryListData }) {
   const { data, revalidate } = useSWR("/api/me", async function (args) {
     const res = await fetch(args);
     const json = await res.json();
-    console.log(json);
     return json;
   });
 
   const [pageState, setPageState] = useState("main");
-  const [uni, setUni] = useState("UPV");
+  const [uni, setUni] = useState(data ? data.user.uni.name : undefined);
   const [categoryList, setCategoryList] = useState(categoryListData);
-  const [category, setCategory] = useState("none");
+  const [category, setCategory] = useState();
   const [posts, setPosts] = useState(postListData);
   const [cPost, setCurrentPost] = useState();
 
-  console.log(data);
   if (!data) return <h1>Loading...</h1>;
   let loggedIn = false;
-  if (data.email) {
+  if (data.user) {
     loggedIn = true;
   }
 
@@ -70,13 +58,41 @@ export default function Home() {
     revalidate();
   };
 
-  const goToCategory = (cat) => {
+  const goToCategory = async (cat) => {
     setPageState("cat");
     setCategory(cat);
+    const postsFromCategory = await fetch(`/api/posts?categoryID=${cat.id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
+    const json = await postsFromCategory.json();
+    if (json.success) {
+      setPosts(json.data);
+    } else {
+      throw new Error("No se han cargao los posts vaya");
+    }
     // Request al server para los datos de la categoría en esa universidad
   };
 
-  const goToPost = (postID) => {};
+  const goToPost = async (postID) => {
+    const postData = await fetch(`/api/posts?id=${postID}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
+    const json = await postData.json();
+    if (json.success) {
+      setCurrentPost({ ...json.data });
+      setPageState("forum");
+    } else {
+      throw new Error("No se han cargao los posts vaya");
+    }
+  };
 
   const goBack = () => {
     switch (pageState) {
@@ -105,9 +121,15 @@ export default function Home() {
                 />
               );
             case "cat":
-              return <CategoryShowcase categoryName={category} posts={posts} />;
+              return (
+                <CategoryShowcase
+                  categoryName={category.name}
+                  posts={posts}
+                  goToPost={goToPost}
+                />
+              );
             case "forum":
-              return <p>forums</p>;
+              return <PostVisualizer post={cPost} />;
           }
         })()}
       {!loggedIn && (
@@ -117,4 +139,21 @@ export default function Home() {
       )}
     </>
   );
+}
+
+export async function getServerSideProps(ctx) {
+  const cookie = ctx.req.headers.cookie
+    .split(";")
+    .map((x) => x.trim())
+    .filter((x) => x.startsWith("hackupc-token="))[0]
+    .split("=")[1];
+
+  const data = jwt.verify(cookie, process.env.JWT_SECRET);
+  const categories = await getCategoriesFromDB(data.user.uni.id);
+
+  return {
+    props: {
+      categoryListData: categories.data,
+    },
+  };
 }
