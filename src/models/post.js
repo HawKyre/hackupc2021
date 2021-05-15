@@ -40,12 +40,21 @@ export default class Post {
       timestamp: this.timestamp,
       author: this.author,
       category: this.category,
-      comments: await this.getComments(),
+      comments: (await this.getComments()).data,
     });
   }
 }
 
-export const getUserPostByID = (user) => {
-  const response = await getDB().all("SELECT ");
+export const getUserPostByID = async (id) => {
+  let error = false;
+  const db = await getDB();
+  const response = await db.get(
+    "SELECT * FROM Post WHERE id = ?",
+    [id],
+    (e) => (error = e)
+  );
+  if (!response || error) {
+    return { success };
+  }
 };
 export const getCategoryPostsFromDB = (category) => {};

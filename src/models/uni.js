@@ -21,10 +21,10 @@ export default class Uni {
   }
 
   async json() {
-    return toJSON({
+    return {
       name: this.name,
-      categories: await this.getCategories(),
-    });
+      categories: (await this.getCategories()).data,
+    };
   }
 }
 
