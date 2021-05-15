@@ -1,3 +1,5 @@
+import getDB from "@models/db";
+
 export default class Uni {
   constructor(name_, categories) {
     this.name = name_;
@@ -5,4 +7,6 @@ export default class Uni {
   }
 }
 
-export const getUnisListFromDB = () => {};
+export const getUnisListFromDB = async () => {
+  return await getDB().all("SELECT name FROM University");
+};

@@ -1,5 +1,6 @@
 export default class Post {
-  constructor(content, timestamp, author, comments, category) {
+  constructor(title, content, timestamp, author, comments, category) {
+    this.title = title;
     this.content = content;
     this.timestamp = timestamp;
     this.author = author;
