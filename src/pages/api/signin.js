@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 export default (req, res) => {
   if (req.method === "POST") {
     console.log(req.body);
-    let user = getUserFromDB(req.body.email, req.body.password);
+    let user = getUserFromDB(req.body.username, req.body.password);
     if (!user) {
       res.status(400).json({
         error: "Couldn't log in.",

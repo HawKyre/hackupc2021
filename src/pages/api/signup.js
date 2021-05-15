@@ -1,19 +1,34 @@
-import { getUserFromDB } from "@models/user";
+import { createUserInDB, getUserFromDB } from "@models/user";
 import jwt from "jsonwebtoken";
 
-export default (req, res) => {
+export default async (req, res) => {
   if (req.method === "POST") {
-    console.log(req.body + "ss");
-    let user = getUserFromDB(req.email, req.password);
-    if (!user) {
-      user = createUserInDB(req.email, req.password);
+    // console.log(req.body);
+    let user = await createUserInDB(
+      req.body.username,
+      req.body.email,
+      req.body.password,
+      req.body.universityID
+    );
+    if (!user.success) {
+      // User already exists
+      res.status(400).json({
+        success: false,
+        error: "User already exists.",
+      });
+      return;
     }
 
     // Check if user exists in DB
     // If exists, return JWT with the info
     // If not, create new user and return JWT
 
-    const jwtToken = jwt.sign({});
-    res.status(200);
+    const jwtToken = jwt.sign(
+      {
+        user: user.data,
+      },
+      process.env.JWT_SECRET
+    );
+    res.status(200).json(jwtToken);
   }
 };
