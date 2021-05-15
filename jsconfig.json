@@ -9,7 +9,8 @@
     "paths": {
       "@components/*": ["src/components/*"],
       "@styles/*": ["styles/*"],
-      "@pages/*": ["src/pages/*"]
+      "@pages/*": ["src/pages/*"],
+      "@models/*": ["src/models/*"]
     }
   },
   "exclude": [
