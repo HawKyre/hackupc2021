@@ -1,4 +1,4 @@
-import getDB from "./db";
+import getDB from "@models/db";
 
 export const getUserFromDB = async (nickname, passwd) => {
   let error = false;
@@ -26,7 +26,7 @@ export const createUserInDB = async (
   email,
   passwd,
   uni_id,
-  name = null, // Null values to avoid problems inserting it to the db.
+  name = null,
   surnames = null,
   degree = null
 ) => {
@@ -60,7 +60,6 @@ export const getUserByID = async (id) => {
   const query =
     "SELECT User.id, User.nickname, User.email, User.passwd, User.uni_id, User.first_name, User.surnames, User.degree, Uni.name FROM User INNER JOIN Uni ON User.uni_id = Uni.id WHERE User.id = ?";
   let response;
-  // const query2 = "SELECT * from User WHERE id = ?";
   try {
     response = await db.get(query, [id]);
   } catch (e) {

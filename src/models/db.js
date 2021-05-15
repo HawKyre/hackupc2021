@@ -14,9 +14,11 @@ let db;
 // }
 
 export default async function getDB() {
-  const db = await sqlite.open({
-    filename: "./db.sqlite",
-    driver: sqlite3.Database,
-  });
+  if (!db) {
+    db = await sqlite.open({
+      filename: "./db.sqlite",
+      driver: sqlite3.Database,
+    });
+  }
   return db;
 }
