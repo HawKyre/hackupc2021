@@ -5,7 +5,7 @@ export const getCategoriesFromDB = async (uni_id) => {
   const db = await getDB();
   let response;
   try {
-    response = await db.all("SELECT name FROM Category WHERE uni_id = ?", [
+    response = await db.all("SELECT name, id FROM Category WHERE uni_id = ?", [
       uni_id,
     ]);
   } catch (e) {

@@ -4,34 +4,37 @@ export const getCommentsFromDB = async (post_id) => {
   let error = false;
   const db = await getDB();
   const query =
-    "SELECT Comments.id, Comments.created_on, User.nickname, Comments.author_id, Comments.content FROM Comments INNER JOIN User ON Comments.author_id = User.id WHERE Comments.post_id = ?";
+    "SELECT Comment.*, User.nickname FROM Comment INNER JOIN User ON Comment.author_id = User.id WHERE Comment.post_id = ?";
   let response;
   try {
     response = await db.all(query, [post_id]);
   } catch (e) {
     error = e;
   }
-  if (!user || !response || error) {
+  console.log(response);
+  if (!response || error) {
     return { success: false, error: error || "No data." };
   }
-  const { id, created_on, content, nickname, author_id } = response;
   return {
     success: true,
-    data: { id, created_on, content, author: { nickname, id: author_id } },
+    data: response,
   };
 };
 
 export const getPostByID = async (postID) => {
   let error = false;
   const db = await getDB();
-  const query =
+  let query =
     "SELECT Post.*, Category.name, Category.uni_id FROM Post INNER JOIN Category ON Post.category_id = Category.id WHERE Post.id = ?";
+  query = "SELECT * FROM Post WHERE id = ?";
   let response;
   try {
     response = await db.get(query, [postID]);
   } catch (e) {
     error = e;
   }
+  console.log("----------------------------");
+  console.log(response);
   if (!response || error) {
     return { success: false, error: error || "No data." };
   }
