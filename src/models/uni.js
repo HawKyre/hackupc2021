@@ -39,6 +39,6 @@ export const getUnisListFromDB = async () => {
   }
   return {
     success: true,
-    data: response.map(({ name: name_, id }) => new Uni(id, name_)),
+    data: response,
   };
 };
