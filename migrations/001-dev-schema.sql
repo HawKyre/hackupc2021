@@ -1,7 +1,7 @@
 -- Up
 CREATE TABLE User (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nickname VARCHAR(20),
+    nickname VARCHAR(20) UNIQUE,
     email VARCHAR(255) NOT NULL,
     passwd VARCHAR(60) NOT NULL,
     uni_id INTEGER REFERENCES Uni(id),
