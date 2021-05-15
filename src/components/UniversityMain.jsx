@@ -9,9 +9,9 @@ const UniMain = ({ uniName, categoryList, goToCategory }) => {
           return (
             <button
               className="h-32 bg-red-100 rounded-xl"
-              onClick={() => goToCategory(c)}
+              onClick={() => goToCategory(c.name)}
             >
-              <p className="text-xl">{c}</p>
+              <p className="text-xl">{c.name}</p>
             </button>
           );
         })}

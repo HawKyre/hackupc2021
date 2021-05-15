@@ -14,7 +14,8 @@ export default function FormInput({
       placeholder={placeholder}
       onChange={onChange}
       className={
-        "mb-9 bg-gray-100 px-2 py-1 rounded filter drop-shadow " + className
+        "w-60 mb-9 bg-gray-100 px-2 py-1 rounded filter drop-shadow " +
+        className
       }
       autoComplete="off"
     />
