@@ -6,10 +6,17 @@ export default class Uni {
     this.id = id;
   }
 
-  async getCategories() {
-    return await getDB().all("SELECT name FROM Category WHERE uni_id = ?", [
-      this.id,
-    ]);
+  async getCategoriesFromDB() {
+    let error = false;
+    const response = await getDB().all(
+      "SELECT name FROM Category WHERE uni_id = ?",
+      [this.id],
+      (e) => (error = e)
+    );
+    if (!response || error) {
+      return { success: false, error: error || "No data." };
+    }
+    return response;
   }
 
   async JSON() {
