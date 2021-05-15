@@ -1,4 +1,0 @@
-{
-  "ignorePatterns": ["/styles/*"],
-  "parser": "babel-eslint"
-}
