@@ -1,15 +1,15 @@
-import { Head as NextHead } from "next/Head";
+import Head from "next/Head";
 
-const Head = () => {
+const MyHead = () => {
   return (
-    <NextHead>
+    <Head>
       <link rel="preconnect" href="https://fonts.gstatic.com" />
       <link
         href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap"
         rel="stylesheet"
       ></link>
-    </NextHead>
+    </Head>
   );
 };
 
-export default Head;
+export default MyHead;
