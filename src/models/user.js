@@ -5,7 +5,12 @@ export const getUserFromDB = async (nickname, passwd) => {
   const query =
     "SELECT User.id, User.nickname, User.email, User.passwd, User.uni_id, Uni.name, User.first_name, User.surnames, User.degree FROM User INNER JOIN Uni ON User.id = Uni.id WHERE User.nickname = ? AND User.passwd = ?";
   const db = await getDB();
-  const response = await db.get(query, [nickname, passwd], (e) => (error = e));
+  let response;
+  try {
+    response = await db.get(query, [nickname, passwd]);
+  } catch (e) {
+    error = e;
+  }
 
   if (!response || error) {
     return { success: false, error: error || "No data" };
@@ -26,28 +31,39 @@ export const createUserInDB = async (
   degree = null
 ) => {
   const db = await getDB();
+  let response;
   let error = false;
   let query =
     "INSERT INTO User (nickname, email, passwd, uni_id, first_name, surnames, degree) VALUES (?, ?, ?, ?, ?, ?, ?)";
-  let response = await db.run(
-    query,
-    [nickname, email, passwd, uni_id, name, surnames, degree],
-    (e) => (error = e)
-  );
-  query = "SELECT * FROM User WHERE id = ?";
-  response = await db.get(query, response.lastID);
-  if (!response || false) {
+  try {
+    response = await db.run(query, [
+      nickname,
+      email,
+      passwd,
+      uni_id,
+      name,
+      surnames,
+      degree,
+    ]);
+  } catch (e) {
+    error = e;
+  }
+  if (!response || error) {
     return { success: false, error: error || "Failed to insert." };
   }
-  return { success: true, data: _getUserFromResponse(response) };
+  return await getUserByID(response.lastID);
 };
 
 export const getUserByID = async (id) => {
+  const db = await getDB();
   const query =
     "SELECT User.id, User.nickname, User.email, User.passwd, User.uni_id, Uni.name, User.first_name, User.surnames, User.degree FROM User INNER JOIN Uni ON User.id = Uni.id WHERE User.uni_id = ?";
-  const db = await getDB();
-  const response = await db.get(query, [id], (e) => (error = e));
-
+  let response;
+  try {
+    response = await db.get(query, [id]);
+  } catch (e) {
+    error = e;
+  }
   if (!response || error) {
     return { success: false, error: error || "No data" };
   }

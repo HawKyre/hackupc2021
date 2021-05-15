@@ -1,61 +1,78 @@
 import getDB from "./db";
-import { getUserByID } from "./user";
 
-export default class Post {
-  constructor(id, title, content, timestamp, author, comments, category) {
-    this.id = id;
-    this.title = title;
-    this.content = content;
-    this.timestamp = timestamp;
-    this.author = author;
-    this.category = category;
-  }
-
-  async getComments() {
-    let error = false;
-    const db = await getDB();
-    const response = await db.all(
-      "SELECT id, created_on, author_id, content FROM Comments WHERE post_id = ?",
-      [this.id],
-      (e) => (error = e)
-    );
-    const { data: user } = await getUserByID(response.author_id);
-    if (!user || !response || error) {
-      return { succes: false, error: error || "No data." };
-    }
-    return {
-      success: true,
-      data: response.map(
-        (comment) =>
-          new Comment(response.id, response.content, response.timestamp, user)
-      ),
-    };
-  }
-
-  async json() {
-    let comments = this.getComments().then((comm) => (comments = comm.data));
-    return toJSON({
-      id: this.id,
-      title: this.title,
-      content: this.content,
-      timestamp: this.timestamp,
-      author: this.author,
-      category: this.category,
-      comments,
-    });
-  }
-}
-
-export const getUserPostByID = async (id) => {
+export const getCommentsFromDB = async (post_id) => {
   let error = false;
   const db = await getDB();
-  const response = await db.get(
-    "SELECT * FROM Post WHERE id = ?",
-    [id],
-    (e) => (error = e)
-  );
-  if (!response || error) {
-    return { success };
+  const query =
+    "SELECT Comments.id, Comments.created_on, User.nickname, Comments.author_id, Comments.content FROM Comments INNER JOIN User ON Comments.author_id = User.id WHERE Comments.post_id = ?";
+  let response;
+  try {
+    response = await db.all(query, [post_id]);
+  } catch (e) {
+    error = e;
   }
+  if (!user || !response || error) {
+    return { succes: false, error: error || "No data." };
+  }
+  const { id, created_on, content, nickname, author_id } = response;
+  return {
+    success: true,
+    data: { id, created_on, content, author: { nickname, author_id } },
+  };
 };
-export const getCategoryPostsFromDB = (category) => {};
+
+export const getPostByID = async (id) => {
+  let error = false;
+  const db = await getDB();
+  const query =
+    "SELECT Post.*, Category.name, Category.uni_id FROM Post INNER JOIN Category ON Post.category_id = Category.id WHERE Post.id = ?";
+  let response;
+  try {
+    response = await db.get(query, [id]);
+  } catch (e) {
+    error = e;
+  }
+  if (!response || error) {
+    return { success: false, error: error || "No data." };
+  }
+  const {
+    id,
+    created_on,
+    author_id,
+    category_id,
+    uni_id,
+    name,
+    title,
+    content,
+  } = response;
+  return {
+    success: true,
+    data: {
+      id,
+      created_on,
+      author_id,
+      category: { category_id, name, uni_id },
+      title,
+      content,
+    },
+  };
+};
+
+export const getCategoryPostsFromDB = async (category_id) => {
+  let error = false;
+  const db = await getDB();
+  const query = "SELECT * FROM Post WHERE category_id = ?";
+  let response;
+  try {
+    response = await db.all(query, [category_id]);
+  } catch (e) {
+    error = e;
+  }
+  if (!response || error) {
+    return { success: false, error: error || "No data." };
+  }
+  return {
+    success: true,
+    data: response,
+  };
+};
