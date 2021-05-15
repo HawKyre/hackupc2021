@@ -6,7 +6,7 @@ export default class Uni {
     this.id = id;
   }
 
-  async getCategories() {
+  async getCategoriesFromDB() {
     let error = false;
     const response = await getDB().all(
       "SELECT name FROM Category WHERE uni_id = ?",

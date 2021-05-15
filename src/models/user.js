@@ -23,6 +23,8 @@ export default class User {
     };
   }
 
+  async getCreatedPosts() {}
+
   async JSON() {
     return JSON.parse({
       nickname: this.nickname,
@@ -77,6 +79,20 @@ export const createUserInDB = (
     return { success: false, error: error || "Failed to insert." };
   }
   return { success: true, data: _getUserFromResponse(response) };
+};
+
+export const getUserByID = async (id) => {
+  const query =
+    "SELECT User.id, User.nickname, User.email, User.passwd, User.uni_id, Uni.name, User.first_name, User.surnames, User.degree FROM User INNER JOIN Uni ON User.id = Uni.id WHERE User.id = ?";
+  const response = await getDB().get(query, [id], (e) => (error = e));
+
+  if (!response || error) {
+    return { success: false, error: error || "No data" };
+  }
+  return {
+    success: true,
+    data: _getUserFromResponse(response),
+  };
 };
 
 const _getUserFromResponse = (response) => {
