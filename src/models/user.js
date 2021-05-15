@@ -4,7 +4,6 @@ export default class User {
     email,
     passwd,
     uni,
-    photo = undefined,
     name = undefined,
     surname = undefined,
     degree = undefined
@@ -14,7 +13,6 @@ export default class User {
     this.passwd = passwd;
     this.uni = uni;
     this.data = {
-      photo,
       name,
       surname,
       degree,
