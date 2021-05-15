@@ -20,4 +20,18 @@ export default class User {
   }
 }
 
-export const getUserFromDB = (email, password) => {};
+export const getUserFromDB = (email, passwd) => {
+  return new User("Joe", email, passwd, "UPV");
+};
+
+export const createUserInDB = (email, passwd) => {
+  return new User("Joe", email, passwd, "UPV");
+};
+
+export const toJSON = (user) => {
+  return {
+    nickname: user.nickname,
+    email: user.email,
+    passwd: user.passwd,
+  };
+};
