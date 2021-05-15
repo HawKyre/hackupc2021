@@ -17,7 +17,7 @@ const Login = ({ uniList }) => {
     username: "",
     email: "",
     password: "",
-    university: "",
+    universityID: uniList[0].id,
   });
 
   const [mode, setMode] = useState("login");
@@ -51,6 +51,7 @@ const Login = ({ uniList }) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Accept: "application/json",
       },
       body: JSON.stringify(registerForm),
     })
@@ -62,6 +63,7 @@ const Login = ({ uniList }) => {
         }
         if (data && data.token) {
           jwt.verify(data.token, process.env.JWT_SECRET, (err, d) => {
+            console.log(d);
             Cookies.set("hackupc-token", data.token, { expires: 20000 });
             Router.push("/");
           });
@@ -138,15 +140,15 @@ const Login = ({ uniList }) => {
 
 export async function getServerSideProps() {
   const unis = await getUnisListFromDB();
-  console.log(unis);
   if (!unis.success) {
     throw new Error("fuck");
     return;
   }
 
+  let uniList = unis.data;
   return {
     props: {
-      uniList: 8,
+      uniList: uniList,
     },
   };
 }

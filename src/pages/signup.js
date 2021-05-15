@@ -70,7 +70,6 @@ const Signup = ({ uniList }) => {
 
 export async function getServerSideProps(ctx) {
   const universities = await getUnisListFromDB();
-  console.log(universities);
 
   return {
     props: {
