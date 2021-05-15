@@ -63,9 +63,9 @@ const _getUserFromResponse = (response) => {
     nickname,
     email,
     passwd: password,
-    name: uni,
+    name,
     uni_id,
     ...data
   } = response;
-  return { id, nickname, email, password, uni: { uni, uni_id }, data };
+  return { id, nickname, email, password, uni: { name, uni_id }, data };
 };
