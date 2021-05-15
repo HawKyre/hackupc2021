@@ -17,7 +17,7 @@ export const getCommentsFromDB = async (post_id) => {
   const { id, created_on, content, nickname, author_id } = response;
   return {
     success: true,
-    data: { id, created_on, content, author: { nickname, author_id } },
+    data: { id, created_on, content, author: { nickname, id: author_id } },
   };
 };
 
@@ -51,7 +51,7 @@ export const getPostByID = async (id) => {
       id,
       created_on,
       author_id,
-      category: { category_id, name, uni_id },
+      category: { id: category_id, name, uni_id },
       title,
       content,
     },
@@ -75,4 +75,26 @@ export const getCategoryPostsFromDB = async (category_id) => {
     success: true,
     data: response,
   };
+};
+
+export const createPostInDB = async (
+  author_id,
+  category_id,
+  title,
+  content
+) => {
+  const db = await getDB();
+  let response;
+  let error = false;
+  let query =
+    "INSERT INTO Post (author_id, category_id, title, content) VALUES (?, ?, ?, ?)";
+  try {
+    response = await db.run(query, [author_id, category_id, title, content]);
+  } catch (e) {
+    error = e;
+  }
+  if (!response || error) {
+    return { success: false, error: error || "Failed to insert." };
+  }
+  return await getPostByID(response.lastID);
 };
