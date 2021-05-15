@@ -21,7 +21,7 @@ export const getCategoryByID = (id) => {
       id,
       name,
       uni: {
-        uni_id,
+        id: uni_id,
         name: uni_name,
       },
     },
