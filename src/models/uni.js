@@ -18,9 +18,13 @@ export default class Uni {
 }
 
 export const getUnisListFromDB = async () => {
-  const response = await getDB().all("SELECT name, id FROM Uni");
-  if (!response) {
-    return { success: false, content: null };
+  let error = false;
+  const response = await getDB().all(
+    "SELECT name, id FROM Uni",
+    (e) => (error = e)
+  );
+  if (!response || error) {
+    return { success: false, error: error || "No data" };
   }
   return {
     success: true,
