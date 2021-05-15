@@ -1,34 +1,18 @@
 import getDB from "@models/db";
 
-export default class Uni {
-  constructor(id, name_) {
-    this.name = name_;
-    this.id = id;
+export const getCategoriesFromDB = async (uni_id) => {
+  let error = false;
+  const db = await getDB();
+  const response = await db.all(
+    "SELECT name FROM Category WHERE uni_id = ?",
+    [uni_id],
+    (e) => (error = e)
+  );
+  if (!response || error) {
+    return { success: false, error: error || "No data." };
   }
-
-  async getCategoriesFromDB() {
-    let error = false;
-    const db = await getDB();
-    const response = await db.all(
-      "SELECT name FROM Category WHERE uni_id = ?",
-      [this.id],
-      (e) => (error = e)
-    );
-    if (!response || error) {
-      return { success: false, error: error || "No data." };
-    }
-    return { success: true, data: response };
-  }
-
-  json() {
-    let categories;
-    this.getCategoriesFromDB().then((cats) => (categories = cats.data));
-    return {
-      name: this.name,
-      categories,
-    };
-  }
-}
+  return { success: true, data: response };
+};
 
 export const getUnisListFromDB = async () => {
   let error = false;
