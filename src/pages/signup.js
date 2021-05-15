@@ -5,48 +5,13 @@ import { useState } from "react";
 import jwt from "jsonwebtoken";
 import { getUnisListFromDB } from "@models/university";
 
-const Signup = () => {
-  const [signupError, setSignupError] = useState("");
+const Signup = ({ uniList }) => {
   const [registerForm, setRegisterForm] = useState({
     username: "",
     email: "",
     password: "",
     university: "",
   });
-
-  const handleChange = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    setRegisterForm((p) => {
-      return {
-        ...p,
-        [name]: value,
-      };
-    });
-  };
-
-  const signUp = (e) => {
-    e.preventDefault();
-    fetch("/api/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(registerForm),
-    })
-      .then((r) => r.json())
-      .then((data) => {
-        if (data && data.error) {
-          setSignupError(data.message);
-        }
-        if (data && data.token) {
-          jwt.verify(data.token, process.env.JWT_SECRET, (err, d) => {
-            Cookies.set("hackupc-token", data.token, { expires: 20000 });
-            Router.push("/");
-          });
-        }
-      });
-  };
 
   return (
     <div className="">
@@ -92,6 +57,9 @@ const Signup = () => {
             placeholder="Universidad..."
             onChange={handleChange}
           />
+          {uniList.map((x) => {
+            return <p className="">{x}</p>;
+          })}
         </div>
         <p>{!!signupError && signupError}</p>
         <button onClick={signUp}>Crear cuenta</button>
@@ -105,7 +73,9 @@ export async function getServerSideProps(ctx) {
   console.log(universities);
 
   return {
-    props: {},
+    props: {
+      uniList: universities.map((x) => x.name),
+    },
   };
 }
 
