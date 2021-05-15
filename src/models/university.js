@@ -8,5 +8,6 @@ export default class Uni {
 }
 
 export const getUnisListFromDB = async () => {
-  return await getDB().all("SELECT name FROM University");
+  const db = await getDB();
+  return await db.all("SELECT name FROM Uni");
 };
