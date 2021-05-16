@@ -28,7 +28,7 @@ export default function Signin({
           onChange={handleChange}
         />
       </div>
-      <p>{!!signupError && signupError}</p>
+      <p>{Boolean(signupError) && signupError}</p>
       <button onClick={signIn} className="mt-8 text-3xl">
         Entrar
       </button>

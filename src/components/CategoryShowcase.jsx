@@ -9,9 +9,13 @@ const CategoryShowcase = ({ categoryName, posts, goToPost, goBack }) => {
         </button>
         <p className="text-3xl flex justify-center my-8 px-6">{categoryName}</p>
       </div>
-      {posts.map((p) => {
+      {posts.map((post) => {
         return (
-          <Post title={p.title} goToPost={() => goToPost(p.id)} key={p.id} />
+          <Post
+            title={post.title}
+            goToPost={() => goToPost(post.id)}
+            key={post.id}
+          />
         );
       })}
     </div>
