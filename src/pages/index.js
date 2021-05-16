@@ -6,8 +6,8 @@ import useSWR from "swr";
 import { LoremIpsum } from "lorem-ipsum";
 import CategoryShowcase from "@components/CategoryShowcase";
 import jwt from "jsonwebtoken";
-import { getCategoriesFromDB } from "@models/uni";
 import PostVisualizer from "@components/PostVisualizer";
+import { getCategoriesFromDB } from "@models/uni";
 
 const postListData = (() => {
   const lorem = new LoremIpsum({
@@ -86,6 +86,7 @@ export default function Home({ categoryListData }) {
       },
     });
     const json = await postData.json();
+    console.log(data);
     if (json.success) {
       setCurrentPost({ ...json.data });
       setPageState("forum");
@@ -104,6 +105,46 @@ export default function Home({ categoryListData }) {
       case "forum":
         setPageState("cat");
         break;
+    }
+  };
+
+  const submitComment = async (text) => {
+    const c = await fetch(`/api/comment`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        userID: data.user.id,
+        postID: cPost.postData.data.id,
+        content: text,
+      }),
+    });
+
+    const json = await c.json();
+    console.log(json);
+    if (json.success) {
+      const comments = await fetch(
+        `/api/comment?postID=${cPost.postData.data.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
+
+      const json2 = await comments.json();
+      setCurrentPost((x) => {
+        return { ...x, comments };
+      });
+
+      console.log("Json 2");
+      console.log(json2);
+    } else {
+      throw new Error("Tusmuert-OS");
     }
   };
 
@@ -129,7 +170,9 @@ export default function Home({ categoryListData }) {
                 />
               );
             case "forum":
-              return <PostVisualizer post={cPost} />;
+              return (
+                <PostVisualizer post={cPost} submitComment={submitComment} />
+              );
           }
         })()}
       {!loggedIn && (
