@@ -86,7 +86,7 @@ export default function Home({ categoryListData }) {
       },
     });
     const json = await postData.json();
-    console.log(data);
+    console.log(json);
     if (json.success) {
       setCurrentPost({ ...json.data });
       setPageState("forum");
@@ -123,24 +123,8 @@ export default function Home({ categoryListData }) {
     });
 
     const json = await c.json();
-    console.log(json);
     if (json.success) {
-      const comments = await fetch(
-        `/api/comment?postID=${cPost.postData.data.id}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        }
-      );
-
-      const json2 = await comments.json();
-      console.log(json2);
-      setCurrentPost((x) => {
-        return { ...x, comments: json2 };
-      });
+      goToPost(cPost.postData.data.id);
     } else {
       throw new Error("Tusmuert-OS");
     }
