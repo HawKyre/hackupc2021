@@ -1,4 +1,4 @@
-import UniMain from "@components/UniversityMain";
+import UniMain from "@components/UniMain";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { useState } from "react";
@@ -137,12 +137,10 @@ export default function Home({ categoryListData }) {
       );
 
       const json2 = await comments.json();
-      setCurrentPost((x) => {
-        return { ...x, comments };
-      });
-
-      console.log("Json 2");
       console.log(json2);
+      setCurrentPost((x) => {
+        return { ...x, comments: json2 };
+      });
     } else {
       throw new Error("Tusmuert-OS");
     }
@@ -191,8 +189,8 @@ export async function getServerSideProps(ctx) {
       .split(";")
       .map((x) => x.trim())
       .filter((x) => x.startsWith("hackupc-token="));
-    if (cookie) {
-      cookie = cookie.split("=")[1];
+    if (cookie.length > 0) {
+      cookie = cookie[0].split("=")[1];
     }
   }
 
