@@ -21,7 +21,7 @@ const PostVisualizer = ({ post, submitComment, goBack }) => {
           className="w-screen px-8 py-4 h-40"
           placeholder="Escribe tu comentario..."
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(ev) => setText(ev.target.value)}
         ></textarea>
         <button
           className="bg-gray-200 py-4 my-8 mx-20 rounded-xl"
@@ -36,12 +36,12 @@ const PostVisualizer = ({ post, submitComment, goBack }) => {
         </button>
       </div>
       <div className="">
-        {post.comments.data.map((x) => {
+        {post.comments.data.map((com) => {
           return (
             <>
               <div className="px-8 mb-4">
-                <p className="text-xl">- {x.nickname} -</p>
-                <div className="">{x.content}</div>
+                <p className="text-xl">- {com.nickname} -</p>
+                <div className="">{com.content}</div>
               </div>
             </>
           );

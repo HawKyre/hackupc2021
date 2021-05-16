@@ -1,5 +1,6 @@
-import { useState } from "react";
+/* eslint-disable max-lines-per-function */
 import FormInput from "./FormInput";
+import { useState } from "react";
 
 export default function Signup({
   handleChange,
@@ -47,8 +48,8 @@ export default function Signup({
           name="university-field"
           type="text"
           placeholder="Universidad..."
-          onChange={(e) => {
-            setUniFilter(e.target.value);
+          onChange={(ev) => {
+            setUniFilter(ev.target.value);
           }}
           className="mb-2"
           value={uniFilter}
@@ -60,19 +61,19 @@ export default function Signup({
           className="w-60 mb-9 bg-gray-100 px-2 py-1 rounded filter drop-shadow"
         >
           {uniList
-            .filter((x) =>
-              x.name.toLowerCase().startsWith(uniFilter.toLowerCase())
+            .filter((uni) =>
+              uni.name.toLowerCase().startsWith(uniFilter.toLowerCase())
             )
-            .map((x) => {
+            .map((uni) => {
               return (
-                <option key={x.id} value={x.id}>
-                  {x.name}
+                <option key={uni.id} value={uni.id}>
+                  {uni.name}
                 </option>
               );
             })}
         </select>
       </div>
-      <p>{!!signupError && signupError}</p>
+      <p>{Boolean(signupError) && signupError}</p>
       <button onClick={signUp} className="mt-8 text-3xl">
         Crear cuenta
       </button>

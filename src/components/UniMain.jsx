@@ -5,14 +5,14 @@ const UniMain = ({ uniName, categoryList, goToCategory }) => {
         Bienvenido al portal de la {uniName}
       </p>
       <div className="grid grid-cols-2 mx-8 gap-3">
-        {categoryList.map((c) => {
+        {categoryList.map((cat) => {
           return (
             <button
               className="h-32 bg-red-100 rounded-xl"
-              key={c.id}
-              onClick={() => goToCategory(c)}
+              key={cat.id}
+              onClick={() => goToCategory(cat)}
             >
-              <p className="text-xl">{c.name}</p>
+              <p className="text-xl">{cat.name}</p>
             </button>
           );
         })}

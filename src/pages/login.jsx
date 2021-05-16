@@ -37,7 +37,7 @@ const Login = ({ uniList }) => {
           setSignupError(data.message);
         }
         if (data && data.token) {
-          jwt.verify(data.token, process.env.JWT_SECRET, (err, d) => {
+          jwt.verify(data.token, process.env.JWT_SECRET, () => {
             Cookies.set("hackupc-token", data.token, { expires: 20000 });
             Router.push("/");
           });
@@ -61,7 +61,7 @@ const Login = ({ uniList }) => {
           setSignupError(data.message);
         }
         if (data && data.token) {
-          jwt.verify(data.token, process.env.JWT_SECRET, (err, d) => {
+          jwt.verify(data.token, process.env.JWT_SECRET, () => {
             Cookies.set("hackupc-token", data.token, { expires: 20000 });
             Router.push("/");
           });
@@ -140,7 +140,6 @@ export async function getServerSideProps() {
   const unis = await getUnisListFromDB();
   if (!unis.success) {
     throw new Error("fuck");
-    return;
   }
 
   let uniList = unis.data;
