@@ -64,7 +64,11 @@ export default function Signup({
               x.name.toLowerCase().startsWith(uniFilter.toLowerCase())
             )
             .map((x) => {
-              return <option value={x.id}>{x.name}</option>;
+              return (
+                <option key={x.id} value={x.id}>
+                  {x.name}
+                </option>
+              );
             })}
         </select>
       </div>

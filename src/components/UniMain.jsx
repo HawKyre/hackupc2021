@@ -9,6 +9,7 @@ const UniMain = ({ uniName, categoryList, goToCategory }) => {
           return (
             <button
               className="h-32 bg-red-100 rounded-xl"
+              key={c.id}
               onClick={() => goToCategory(c)}
             >
               <p className="text-xl">{c.name}</p>

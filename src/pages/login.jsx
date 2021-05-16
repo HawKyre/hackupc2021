@@ -116,7 +116,7 @@ const Login = ({ uniList }) => {
           </button>
         </li>
       </nav>
-      <div>
+      <div className="shadow rounded">
         {mode === "login" ? (
           <Signin
             handleChange={handleLoginChange}
