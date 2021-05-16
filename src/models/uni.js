@@ -1,36 +1,33 @@
 import getDB from "@models/db";
 
-export const getCategoriesFromDB = async (uni_id) => {
+export const getCategoriesFromDB = async (uniID) => {
   let error = false;
   const db = await getDB();
-  let response;
+  let response = false;
   try {
     response = await db.all("SELECT name, id FROM Category WHERE uni_id = ?", [
-      uni_id,
+      uniID,
     ]);
-  } catch (e) {
-    error = e;
+  } catch (err) {
+    error = err;
   }
   if (!response || error) {
-    return { success: false, error: error || "No data." };
+    return { error: error || "No data.", success: false };
   }
-  return { success: true, data: response };
+  return { data: response, success: true };
 };
 
 export const getUnisListFromDB = async () => {
   let error = false;
   const db = await getDB();
-  let response;
+  let response = false;
   try {
     response = await db.all("SELECT name, id FROM Uni");
-  } catch (e) {
-    error = e;
+  } catch (err) {
+    error = err;
   }
   if (!response || error) {
-    return { success: false, error: error || "No data" };
+    return { error: error || "No data", success: false };
   }
-  return {
-    success: true,
-    data: response,
-  };
+  return { data: response, success: true };
 };

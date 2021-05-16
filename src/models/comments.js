@@ -1,55 +1,52 @@
 import getDB from "@models/db";
 
-export const createCommentInDB = async (author_id, post_id, content) => {
+export const createCommentInDB = async (authorID, postID, content) => {
   const db = await getDB();
-  let response;
   let error = false;
-  let query =
+  let response = false;
+  const query =
     "INSERT INTO Comment (author_id, post_id, content) VALUES (?, ?, ?)";
   try {
-    response = await db.run(query, [author_id, post_id, content]);
-  } catch (e) {
-    error = e;
+    response = await db.run(query, [authorID, postID, content]);
+  } catch (err) {
+    error = err;
   }
   if (!response || error) {
-    return { success: false, error: error || "Failed to insert." };
+    return { error: error || "Failed to insert.", success: false };
   }
-  return { success: true, data: {} };
+  return { data: {}, success: true };
 };
 
 export const getCommentByID = async (id) => {
   const db = await getDB();
-  let response;
+  let response = false;
   let error = false;
-  let query = "SELECT * FROM Comment WHERE id = ?";
+  const query = "SELECT * FROM Comment WHERE id = ?";
   try {
     response = await db.get(query, [id]);
-  } catch (e) {
-    error = e;
+  } catch (err) {
+    error = err;
   }
   if (!response || error) {
-    return { success: false, error: error || "Failed to insert." };
+    return { error: error || "Failed to insert.", success: false };
   }
-  return { success: true, data: response };
+  return { data: response, success: true };
 };
 
-export const getCommentsFromDB = async (post_id) => {
+export const getCommentsFromDB = async (postID) => {
   let error = false;
   const db = await getDB();
-  let query =
+  const query =
     "SELECT Comment.*, User.nickname FROM Comment LEFT JOIN User ON Comment.author_id = User.id WHERE Comment.post_id = ?";
 
-  let response;
+  let response = false;
   try {
-    response = await db.all(query, [post_id]);
-  } catch (e) {
-    error = e;
+    response = await db.all(query, [postID]);
+  } catch (err) {
+    error = err;
   }
   if (!response || error) {
-    return { success: false, error: error || "No data." };
+    return { error: error || "No data.", success: false };
   }
-  return {
-    success: true,
-    data: response,
-  };
+  return { data: response, success: true };
 };
