@@ -7,6 +7,7 @@ import CategoryShowcase from "@components/CategoryShowcase";
 import jwt from "jsonwebtoken";
 import PostVisualizer from "@components/PostVisualizer";
 import { getCategoriesFromDB } from "@models/uni";
+import Head from "@components/Head";
 
 export default function Home({ categoryListData }) {
   const { data, revalidate } = useSWR("/api/me", async function (args) {
@@ -105,7 +106,8 @@ export default function Home({ categoryListData }) {
   };
 
   return (
-    <>
+    <div>
+      <Head />
       {loggedIn &&
         (() => {
           switch (pageState) {
@@ -136,7 +138,7 @@ export default function Home({ categoryListData }) {
           <Link href="/login">Entrar / Crear cuenta</Link>
         </>
       )}
-    </>
+    </div>
   );
 }
 

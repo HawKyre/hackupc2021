@@ -1,8 +1,8 @@
-import Head from "next/head";
+import NextHead from "next/head";
 
-const MyHead = () => {
+const Head = () => {
   return (
-    <Head>
+    <NextHead>
       <link rel="preconnect" href="https://fonts.gstatic.com" />
       <link
         href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap"
@@ -65,8 +65,8 @@ const MyHead = () => {
       <meta name="msapplication-TileColor" content="#ffffff" />
       <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
       <meta name="theme-color" content="#9b71ff" />
-    </Head>
+    </NextHead>
   );
 };
 
-export default MyHead;
+export default Head;
