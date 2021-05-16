@@ -110,11 +110,11 @@ const Login = ({ uniList }) => {
             onClick={() => setMode("register")}
             className={`${mode === "register" ? "underline" : "text-gray-400"}`}
           >
-            Registrar
+            Registrarse
           </button>
         </li>
       </nav>
-      <div className="shadow rounded">
+      <div>
         {mode === "login" ? (
           <Signin
             handleChange={handleLoginChange}

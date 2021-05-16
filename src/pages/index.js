@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken";
 import PostVisualizer from "@components/PostVisualizer";
 import { getCategoriesFromDB } from "@models/uni";
 import Head from "@components/Head";
+import CreatePost from "@components/CreatePost";
 
 export default function Home({ categoryListData }) {
   const { data, revalidate } = useSWR("/api/me", async function (args) {
@@ -17,10 +18,13 @@ export default function Home({ categoryListData }) {
   });
 
   const [pageState, setPageState] = useState("main");
-  const [categoryList, setCategoryList] = useState(categoryListData);
   const [category, setCategory] = useState();
   const [posts, setPosts] = useState([]);
   const [cPost, setCurrentPost] = useState();
+  const [newPostData, setNewPostData] = useState({
+    title: "",
+    content: "",
+  });
 
   if (!data) return <h1>Loading...</h1>;
   let loggedIn = false;
@@ -61,7 +65,6 @@ export default function Home({ categoryListData }) {
       },
     });
     const json = await postData.json();
-    console.log(json);
     if (json.success) {
       setCurrentPost({ ...json.data });
       setPageState("forum");
@@ -78,6 +81,7 @@ export default function Home({ categoryListData }) {
         setPageState("main");
         break;
       case "forum":
+      case "newpost":
         setPageState("cat");
         break;
     }
@@ -105,6 +109,33 @@ export default function Home({ categoryListData }) {
     }
   };
 
+  const goToCreatePost = () => {
+    setPageState("newpost");
+  };
+
+  const createPost = async () => {
+    const postData = await fetch(`/api/posts`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        authorID: data.user.id,
+        categoryID: category.id,
+        title: newPostData.title,
+        content: newPostData.content,
+      }),
+    });
+    const json = await postData.json();
+    console.log(json);
+    if (json.success) {
+      await goToCategory(category);
+    } else {
+      throw new Error("No se han cargao los posts vaya");
+    }
+  };
+
   return (
     <div>
       <Head />
@@ -115,7 +146,7 @@ export default function Home({ categoryListData }) {
               return (
                 <UniMain
                   uniName={data.user.uni.name}
-                  categoryList={categoryList}
+                  categoryList={categoryListData}
                   goToCategory={goToCategory}
                 />
               );
@@ -126,6 +157,17 @@ export default function Home({ categoryListData }) {
                   posts={posts}
                   goToPost={goToPost}
                   goBack={goBack}
+                  goToCreatePost={goToCreatePost}
+                />
+              );
+            case "newpost":
+              return (
+                <CreatePost
+                  categoryName={category.name}
+                  newPostData={newPostData}
+                  setNewPostData={setNewPostData}
+                  cancel={goBack}
+                  accept={createPost}
                 />
               );
             case "forum":

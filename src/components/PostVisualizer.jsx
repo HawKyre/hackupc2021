@@ -16,9 +16,9 @@ const PostVisualizer = ({ post, submitComment, goBack }) => {
         <textarea
           name=""
           id=""
-          rows="20"
+          rows="10"
           columns="8"
-          className="w-screen px-8 py-4 h-40"
+          className="w-screen px-8 py-4 h-52 bg-gray-50"
           placeholder="Escribe tu comentario..."
           value={text}
           onChange={(ev) => setText(ev.target.value)}
