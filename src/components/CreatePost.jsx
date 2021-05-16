@@ -6,8 +6,7 @@ const CreatePost = ({
   setNewPostData,
 }) => {
   const handleChange = (ev) => {
-    const name = ev.target.name;
-    const value = ev.target.value;
+    const { name, value } = ev.target;
     setNewPostData((prev) => {
       return { ...prev, [name]: value };
     });
@@ -48,8 +47,8 @@ const CreatePost = ({
           className="px-3 py-2 bg-red-50 rounded"
           onClick={() => {
             setNewPostData({
-              title: "",
               content: "",
+              title: "",
             });
             cancel();
           }}

@@ -1,3 +1,4 @@
+/* eslint-disable max-lines-per-function */
 import FormInput from "./FormInput";
 import { useState } from "react";
 
@@ -8,7 +9,6 @@ export default function Signup({
   signUp,
   uniList,
 }) {
-  console.log(registerForm);
   const [uniFilter, setUniFilter] = useState("");
   return (
     <div className="font-sans mt-20 flex flex-col items-center justify-center">
@@ -75,17 +75,17 @@ export default function Signup({
       <button
         onClick={signUp}
         className={`mt-8 text-3xl ${
-          (Object.values(registerForm).some((x) => x === "") ||
+          (Object.values(registerForm).some((field) => field === "") ||
             uniList.filter((uni) =>
               uni.name.toLowerCase().startsWith(uniFilter.toLowerCase())
-            ).length == 0) &&
+            ).length === 0) &&
           "text-gray-200"
         }`}
         disabled={
-          Object.values(registerForm).some((x) => x === "") ||
+          Object.values(registerForm).some((field) => field === "") ||
           uniList.filter((uni) =>
             uni.name.toLowerCase().startsWith(uniFilter.toLowerCase())
-          ).length == 0
+          ).length === 0
         }
       >
         Crear cuenta
