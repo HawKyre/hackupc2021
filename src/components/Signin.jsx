@@ -29,7 +29,13 @@ export default function Signin({
         />
       </div>
       <p>{Boolean(signupError) && signupError}</p>
-      <button onClick={signIn} className="mt-8 text-3xl">
+      <button
+        onClick={signIn}
+        disabled={!loginForm.username || !loginForm.password}
+        className={`mt-8 text-3xl ${
+          (!loginForm.username || !loginForm.password) && "text-gray-200"
+        }`}
+      >
         Entrar
       </button>
     </div>
