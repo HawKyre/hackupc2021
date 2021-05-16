@@ -14,7 +14,7 @@ export const createCommentInDB = async (author_id, post_id, content) => {
   if (!response || error) {
     return { success: false, error: error || "Failed to insert." };
   }
-  return await getCommentByID(response.lastID);
+  return { success: true, data: {} };
 };
 
 export const getCommentByID = async (id) => {
@@ -30,21 +30,21 @@ export const getCommentByID = async (id) => {
   if (!response || error) {
     return { success: false, error: error || "Failed to insert." };
   }
-  return { success: false, data: response };
+  return { success: true, data: response };
 };
 
 export const getCommentsFromDB = async (post_id) => {
   let error = false;
   const db = await getDB();
-  const query =
-    "SELECT Comment.*, User.nickname FROM Comment INNER JOIN User ON Comment.author_id = User.id WHERE Comment.post_id = ?";
+  let query =
+    "SELECT Comment.*, User.nickname FROM Comment LEFT JOIN User ON Comment.author_id = User.id WHERE Comment.post_id = ?";
+
   let response;
   try {
     response = await db.all(query, [post_id]);
   } catch (e) {
     error = e;
   }
-  console.log(response);
   if (!response || error) {
     return { success: false, error: error || "No data." };
   }

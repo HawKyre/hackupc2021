@@ -10,7 +10,6 @@ export default async (req, res) => {
         req.body.password,
         req.body.universityID
       );
-      console.log(user);
       if (!user.success) {
         // User already exists
         res.status(400).json({
@@ -24,20 +23,20 @@ export default async (req, res) => {
       // If exists, return JWT with the info
       // If not, create new user and return JWT
 
-      console.log(user.data);
-
       const jwtToken = jwt.sign(
         {
           user: user.data,
         },
-        process.env.JWT_SECRET
+        process.env.JWT_SECRET,
+        {
+          expiresIn: 300000,
+        }
       );
       res.status(200).json({
         success: true,
         token: jwtToken,
       });
     } catch (e) {
-      console.log(e);
       res.status(400).json({
         success: false,
         error: "User already exists.",

@@ -35,6 +35,8 @@ CREATE TABLE Category (
 );
 INSERT INTO User (nickname, email, passwd, uni_id)
 VALUES ("foo", "ex@email.com", "foo", 1);
+INSERT INTO User (nickname, email, passwd, uni_id)
+VALUES ("a", "a", "a", 1);
 INSERT INTO User (
         nickname,
         email,

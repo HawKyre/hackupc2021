@@ -5,15 +5,13 @@ export const getPostByID = async (postID) => {
   const db = await getDB();
   let query =
     "SELECT Post.*, Category.name, Category.uni_id FROM Post INNER JOIN Category ON Post.category_id = Category.id WHERE Post.id = ?";
-  query = "SELECT * FROM Post WHERE id = ?";
+  // query = "SELECT * FROM Post WHERE id = ?";
   let response;
   try {
     response = await db.get(query, [postID]);
   } catch (e) {
     error = e;
   }
-  console.log("----------------------------");
-  console.log(response);
   if (!response || error) {
     return { success: false, error: error || "No data." };
   }

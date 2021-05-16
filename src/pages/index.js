@@ -3,35 +3,10 @@ import Cookies from "js-cookie";
 import Link from "next/link";
 import { useState } from "react";
 import useSWR from "swr";
-import { LoremIpsum } from "lorem-ipsum";
 import CategoryShowcase from "@components/CategoryShowcase";
 import jwt from "jsonwebtoken";
 import PostVisualizer from "@components/PostVisualizer";
 import { getCategoriesFromDB } from "@models/uni";
-
-const postListData = (() => {
-  const lorem = new LoremIpsum({
-    sentencesPerParagraph: {
-      max: 8,
-      min: 4,
-    },
-    wordsPerSentence: {
-      max: 16,
-      min: 4,
-    },
-  });
-
-  let arr = [];
-  for (let i = 0; i < 20; i++) {
-    const title = lorem.generateSentences(1);
-    const content = lorem.generateParagraphs(1);
-    arr.push({
-      title,
-      content,
-    });
-  }
-  return arr;
-})();
 
 export default function Home({ categoryListData }) {
   const { data, revalidate } = useSWR("/api/me", async function (args) {
@@ -41,10 +16,9 @@ export default function Home({ categoryListData }) {
   });
 
   const [pageState, setPageState] = useState("main");
-  const [uni, setUni] = useState(data ? data.user.uni.name : undefined);
   const [categoryList, setCategoryList] = useState(categoryListData);
   const [category, setCategory] = useState();
-  const [posts, setPosts] = useState(postListData);
+  const [posts, setPosts] = useState([]);
   const [cPost, setCurrentPost] = useState();
 
   if (!data) return <h1>Loading...</h1>;
@@ -138,7 +112,7 @@ export default function Home({ categoryListData }) {
             case "main":
               return (
                 <UniMain
-                  uniName={uni}
+                  uniName={data.user.uni.name}
                   categoryList={categoryList}
                   goToCategory={goToCategory}
                 />
@@ -179,7 +153,7 @@ export async function getServerSideProps(ctx) {
   }
 
   if (!cookie) {
-    return { redirect: { destination: "/", permanent: false } };
+    return { redirect: { destination: "/login", permanent: false } };
   }
 
   const data = jwt.verify(cookie, process.env.JWT_SECRET);

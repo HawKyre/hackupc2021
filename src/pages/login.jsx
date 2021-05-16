@@ -57,13 +57,11 @@ const Login = ({ uniList }) => {
     })
       .then((r) => r.json())
       .then((data) => {
-        console.log(data);
         if (data && data.error) {
           setSignupError(data.message);
         }
         if (data && data.token) {
           jwt.verify(data.token, process.env.JWT_SECRET, (err, d) => {
-            console.log(d);
             Cookies.set("hackupc-token", data.token, { expires: 20000 });
             Router.push("/");
           });
