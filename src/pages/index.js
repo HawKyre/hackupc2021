@@ -1,17 +1,17 @@
-import UniMain from "@components/UniMain";
-import Cookies from "js-cookie";
-import Link from "next/link";
-import { useState } from "react";
-import useSWR from "swr";
 import CategoryShowcase from "@components/CategoryShowcase";
-import jwt from "jsonwebtoken";
-import PostVisualizer from "@components/PostVisualizer";
-import { getCategoriesFromDB } from "@models/uni";
-import Head from "@components/Head";
+import Cookies from "js-cookie";
 import CreatePost from "@components/CreatePost";
+import Head from "@components/Head";
+import Link from "next/link";
+import PostVisualizer from "@components/PostVisualizer";
+import UniMain from "@components/UniMain";
+import { getCategoriesFromDB } from "@models/uni";
+import jwt from "jsonwebtoken";
+import useSWR from "swr";
+import { useState } from "react";
 
 export default function Home({ categoryListData }) {
-  const { data, revalidate } = useSWR("/api/me", async function (args) {
+  const { data, revalidate } = useSWR("/api/me", async (args) => {
     const res = await fetch(args);
     const json = await res.json();
     return json;
@@ -22,8 +22,8 @@ export default function Home({ categoryListData }) {
   const [posts, setPosts] = useState([]);
   const [cPost, setCurrentPost] = useState();
   const [newPostData, setNewPostData] = useState({
-    title: "",
     content: "",
+    title: "",
   });
 
   if (!data) return <h1>Loading...</h1>;
@@ -41,11 +41,11 @@ export default function Home({ categoryListData }) {
     setPageState("cat");
     setCategory(cat);
     const postsFromCategory = await fetch(`/api/posts?categoryID=${cat.id}`, {
-      method: "GET",
       headers: {
-        "Content-Type": "application/json",
         Accept: "application/json",
+        "Content-Type": "application/json",
       },
+      method: "GET",
     });
     const json = await postsFromCategory.json();
     if (json.success) {
@@ -58,11 +58,11 @@ export default function Home({ categoryListData }) {
 
   const goToPost = async (postID) => {
     const postData = await fetch(`/api/posts?id=${postID}`, {
-      method: "GET",
       headers: {
-        "Content-Type": "application/json",
         Accept: "application/json",
+        "Content-Type": "application/json",
       },
+      method: "GET",
     });
     const json = await postData.json();
     if (json.success) {
@@ -84,24 +84,26 @@ export default function Home({ categoryListData }) {
       case "newpost":
         setPageState("cat");
         break;
+      default:
+        break;
     }
   };
 
   const submitComment = async (text) => {
-    const c = await fetch(`/api/comment`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
+    const comments = await fetch(`/api/comment`, {
       body: JSON.stringify({
-        userID: data.user.id,
-        postID: cPost.postData.data.id,
         content: text,
+        postID: cPost.postData.data.id,
+        userID: data.user.id,
       }),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      method: "POST",
     });
 
-    const json = await c.json();
+    const json = await comments.json();
     if (json.success) {
       goToPost(cPost.postData.data.id);
     } else {
@@ -115,20 +117,19 @@ export default function Home({ categoryListData }) {
 
   const createPost = async () => {
     const postData = await fetch(`/api/posts`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
       body: JSON.stringify({
         authorID: data.user.id,
         categoryID: category.id,
-        title: newPostData.title,
         content: newPostData.content,
+        title: newPostData.title,
       }),
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      method: "POST",
     });
     const json = await postData.json();
-    console.log(json);
     if (json.success) {
       await goToCategory(category);
     } else {
@@ -178,6 +179,8 @@ export default function Home({ categoryListData }) {
                   goBack={goBack}
                 />
               );
+            default:
+              break;
           }
         })()}
       {!loggedIn && (
@@ -190,22 +193,21 @@ export default function Home({ categoryListData }) {
 }
 
 export async function getServerSideProps(ctx) {
-  let cookie = ctx.req.headers.cookie;
+  let { cookie } = ctx.req.headers;
   if (cookie) {
     cookie = cookie
       .split(";")
-      .map((x) => x.trim())
-      .filter((x) => x.startsWith("hackupc-token="));
+      .map((ck) => ck.trim())
+      .filter((ck) => ck.startsWith("hackupc-token="));
     if (cookie.length > 0) {
       cookie = cookie[0].split("=")[1];
     }
   }
 
-  if (!cookie || cookie.length == 0) {
+  if (!cookie || cookie.length === 0) {
     return { redirect: { destination: "/login", permanent: false } };
   }
 
-  console.log(cookie);
   const data = jwt.verify(cookie, process.env.JWT_SECRET);
   const categories = await getCategoriesFromDB(data.user.uni.id);
 
