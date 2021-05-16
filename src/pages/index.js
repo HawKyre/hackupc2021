@@ -185,11 +185,20 @@ export default function Home({ categoryListData }) {
 }
 
 export async function getServerSideProps(ctx) {
-  const cookie = ctx.req.headers.cookie
-    .split(";")
-    .map((x) => x.trim())
-    .filter((x) => x.startsWith("hackupc-token="))[0]
-    .split("=")[1];
+  let cookie = ctx.req.headers.cookie;
+  if (cookie) {
+    cookie = cookie
+      .split(";")
+      .map((x) => x.trim())
+      .filter((x) => x.startsWith("hackupc-token="));
+    if (cookie) {
+      cookie = cookie.split("=")[1];
+    }
+  }
+
+  if (!cookie) {
+    return { redirect: { destination: "/", permanent: false } };
+  }
 
   const data = jwt.verify(cookie, process.env.JWT_SECRET);
   const categories = await getCategoriesFromDB(data.user.uni.id);
