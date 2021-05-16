@@ -1,11 +1,14 @@
 import { useState } from "react";
 
-const PostVisualizer = ({ post, submitComment }) => {
+const PostVisualizer = ({ post, submitComment, goBack }) => {
   const [text, setText] = useState("");
 
   return (
     <>
       <div className="py-6 px-8 bg-gray-100">
+        <button className="text-4xl mb-4" onClick={goBack}>
+          {"<"}
+        </button>
         <p className="text-xl">{post.postData.data.title}</p>
         <div className="">{post.postData.data.content}</div>
       </div>

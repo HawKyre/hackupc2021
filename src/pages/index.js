@@ -125,11 +125,16 @@ export default function Home({ categoryListData }) {
                   categoryName={category.name}
                   posts={posts}
                   goToPost={goToPost}
+                  goBack={goBack}
                 />
               );
             case "forum":
               return (
-                <PostVisualizer post={cPost} submitComment={submitComment} />
+                <PostVisualizer
+                  post={cPost}
+                  submitComment={submitComment}
+                  goBack={goBack}
+                />
               );
           }
         })()}
