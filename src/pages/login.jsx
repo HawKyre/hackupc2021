@@ -35,8 +35,7 @@ const Login = ({ uniList }) => {
       .then((data) => {
         if (data && data.error) {
           setSignupError(data.message);
-        }
-        if (data && data.token) {
+        } else if (data && data.token) {
           jwt.verify(data.token, process.env.JWT_SECRET, () => {
             Cookies.set("hackupc-token", data.token, { expires: 20000 });
             Router.push("/");

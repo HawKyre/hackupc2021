@@ -6,6 +6,7 @@ export default async (req, res) => {
     let user = await getUserFromDB(req.body.username, req.body.password);
     if (!user) {
       res.status(400).json({
+        success: false,
         error: "Couldn't log in.",
       });
       return;
@@ -15,7 +16,7 @@ export default async (req, res) => {
     // If exists, return JWT with the info
     // If not, create new user and return JWT
 
-    console.log(user.data);
+    console.log("User data: " + JSON.stringify(user.data));
 
     const jwtToken = jwt.sign(
       {
