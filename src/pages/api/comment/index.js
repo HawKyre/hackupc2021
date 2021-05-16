@@ -1,20 +1,19 @@
 import { createCommentInDB, getCommentsFromDB } from "@models/comments";
 
 export default async (req, res) => {
+  const MULTIPLE_CHOICE = 300;
+  const BAD_REQUEST = 400;
   switch (req.method) {
     case "GET": {
-      console.log("dsdssd");
       if (req.query.postID) {
         const comments = await getCommentsFromDB(req.query.postID);
         if (comments.success) {
-          res.status(300).json(comments);
-          return;
+          res.status(MULTIPLE_CHOICE).json(comments);
         } else {
-          res.status(400).json({
-            success: false,
+          res.status(BAD_REQUEST).json({
             error: "oops",
+            success: false,
           });
-          return;
         }
       }
       break;
@@ -22,18 +21,20 @@ export default async (req, res) => {
     case "POST": {
       const { userID, postID, content } = req.body;
       const newComment = await createCommentInDB(userID, postID, content);
-      console.log(newComment);
       if (newComment.success) {
-        res.status(300).send({
-          success: true,
+        res.status(MULTIPLE_CHOICE).send({
           data: {},
+          success: true,
         });
       } else {
-        res.status(400).send({
-          success: false,
+        res.status(BAD_REQUEST).send({
           error: "IDFK",
+          success: false,
         });
       }
+      break;
+    }
+    default: {
       break;
     }
   }

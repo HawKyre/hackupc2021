@@ -2,26 +2,27 @@ const jwt = require("jsonwebtoken");
 const jwtSecret = process.env.JWT_SECRET;
 
 export default (req, res) => {
+  const UNAUTHORIZED = 401;
   if (req.method === "GET") {
     if (!req.cookies["hackupc-token"]) {
-      res.status(401).json({ message: "Unable to auth" });
+      res.status(UNAUTHORIZED).json({ message: "Unable to auth" });
       return;
     }
-    let decoded;
+    let decoded = false;
+    let error = false;
     const token = req.cookies["hackupc-token"];
     if (token) {
       try {
         decoded = jwt.verify(token, jwtSecret);
-      } catch (e) {
-        console.error(e);
+      } catch (err) {
+        error = err;
       }
     }
 
     if (decoded) {
       res.json(decoded);
-      return;
     } else {
-      res.status(401).json({ message: "Unable to auth" });
+      res.status(UNAUTHORIZED).json({ message: `Unable to auth: ${error}` });
     }
   }
 };

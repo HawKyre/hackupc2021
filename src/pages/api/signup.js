@@ -1,10 +1,12 @@
-import { createUserInDB, getUserFromDB } from "@models/user";
+import { createUserInDB } from "@models/user";
 import jwt from "jsonwebtoken";
 
 export default async (req, res) => {
+  const BAD_REQUEST = 400;
+  const OK = 200;
   if (req.method === "POST") {
     try {
-      let user = await createUserInDB(
+      const user = await createUserInDB(
         req.body.username,
         req.body.email,
         req.body.password,
@@ -12,17 +14,12 @@ export default async (req, res) => {
       );
       if (!user.success) {
         // User already exists
-        res.status(400).json({
-          success: false,
+        res.status(BAD_REQUEST).json({
           error: "User already exists.",
+          success: false,
         });
         return;
       }
-
-      // Check if user exists in DB
-      // If exists, return JWT with the info
-      // If not, create new user and return JWT
-
       const jwtToken = jwt.sign(
         {
           user: user.data,
@@ -32,16 +29,15 @@ export default async (req, res) => {
           expiresIn: 300000,
         }
       );
-      res.status(200).json({
+      res.status(OK).json({
         success: true,
         token: jwtToken,
       });
-    } catch (e) {
-      res.status(400).json({
-        success: false,
+    } catch (err) {
+      res.status(BAD_REQUEST).json({
         error: "User already exists.",
+        success: false,
       });
-      return;
     }
   }
 };
