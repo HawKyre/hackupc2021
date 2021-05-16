@@ -152,10 +152,11 @@ export async function getServerSideProps(ctx) {
     }
   }
 
-  if (!cookie) {
+  if (!cookie || cookie.length == 0) {
     return { redirect: { destination: "/login", permanent: false } };
   }
 
+  console.log(cookie);
   const data = jwt.verify(cookie, process.env.JWT_SECRET);
   const categories = await getCategoriesFromDB(data.user.uni.id);
 
